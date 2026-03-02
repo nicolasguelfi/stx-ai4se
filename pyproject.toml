@@ -1,0 +1,16 @@
+[project]
+name = "ai4se-streamtex"
+version = "1.0.0"
+description = "AI4SE — Generative Software Engineering course materials"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = ["streamtex>=0.3.0"]
+
+[dependency-groups]
+dev = ["pytest>=7.0", "ruff>=0.4.0"]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.uv.sources]
+streamtex = { path = "../streamtex", editable = true }
