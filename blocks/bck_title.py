@@ -1,8 +1,8 @@
 """Title slide — Generative Software Engineering (AI4SE course)."""
 
 from streamtex import *
-from streamtex.styles import Style as ns, StyleGrid as sg
-from streamtex.enums import Tags as t, ListTypes as lt
+from streamtex.styles import Style as ns
+from streamtex.enums import Tags as t
 from custom.styles import Styles as s
 
 

@@ -4,10 +4,8 @@ Reproduces the Stack Overflow Developer Survey 2024 chart (All Respondents).
 Edit DATA section below to update values.
 """
 
-import streamlit as st
 from streamtex import *
-from streamtex.styles import Style as ns, StyleGrid as sg
-from streamtex.enums import Tags as t, ListTypes as lt
+from streamtex.enums import Tags as t
 from custom.styles import Styles as s
 
 
@@ -65,7 +63,7 @@ class BlockStyles:
     # --- Bar chart CSS (st_html — uses hex constants above) ---
     bar_label_css = f"color:{_MUTED};font-size:48px;white-space:nowrap;"
     bar_bg_css = f"background:{_BAR_COLOR};border-radius:8px;height:48px;"
-    bar_value_css = f"font-size:48px;font-weight:600;white-space:nowrap;"
+    bar_value_css = "font-size:48px;font-weight:600;white-space:nowrap;"
 
 bs = BlockStyles
 
