@@ -3,7 +3,7 @@
 import streamlit as st
 import setup
 import streamtex as stx
-from streamtex import st_book, TOCConfig, MarkerConfig, BannerConfig
+from streamtex import st_book, TOCConfig, NumberingMode, MarkerConfig, BannerConfig
 from pathlib import Path
 
 from custom.styles import Styles as s
@@ -18,7 +18,7 @@ stx.set_static_sources([str(Path(__file__).parent / "static")])
 st.set_page_config(
     page_title="AI4SE — Generative Software Engineering",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
 # Inject dark theme
@@ -26,7 +26,7 @@ sts.theme = dark
 
 # Table of Contents
 toc = TOCConfig(
-    numerate_titles=False,
+    numbering=NumberingMode.SIDEBAR_ONLY,
     toc_position=0,
     title_style=s.project.titles.section_title + s.center_txt + s.text.wrap.nowrap,
     content_style=s.large + s.text.colors.reset,

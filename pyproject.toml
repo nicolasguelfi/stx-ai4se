@@ -1,5 +1,5 @@
 [project]
-name = "ai4se-streamtex"
+name = "stx-ai4se"
 version = "1.0.0"
 description = "AI4SE — Generative Software Engineering course materials"
 requires-python = ">=3.10"
@@ -13,4 +13,7 @@ dev = ["pytest>=7.0", "ruff>=0.4.0"]
 default-groups = ["dev"]
 
 [tool.uv.sources]
-streamtex = { path = "../streamtex", editable = true }
+streamtex = { path = "../../streamtex", editable = true }
+
+[tool.pyright]
+extraPaths = ["../../streamtex"]

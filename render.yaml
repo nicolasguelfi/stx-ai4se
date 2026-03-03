@@ -1,8 +1,8 @@
 services:
   - type: web
-    name: ai4se-streamtex
+    name: stx-ai4se
     runtime: docker
-    repo: https://github.com/nicolasguelfi/ai4se-streamtex
+    repo: https://github.com/nicolasguelfi/stx-ai4se
     branch: main
     plan: free
     dockerfilePath: ./Dockerfile
