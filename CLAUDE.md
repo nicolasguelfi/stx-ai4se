@@ -27,11 +27,13 @@ All slides in this project are designed for **live projection at 10–20 m dista
 | Body colors | Any palette color | No `muted`/`subtle` on body |
 | Giant/GIANT | Title size | **Exceptional only** — single-word decorative elements |
 
-### Commands
+### Commands — stx-designer
 
-- `/designer:presentation-audit <block_file>` — check block for compliance
-- `/designer:presentation-fix <block_file>` — auto-fix violations
-- `/designer:survey-convert <image_or_--all>` — convert SO survey screenshot to block
+- `/stx-designer:audit --target <block_file>` — check block for compliance
+- `/stx-designer:fix --target <block_file>` — auto-fix violations
+- `/stx-designer:tool survey-convert <image_or_--all>` — convert SO survey screenshot to block
+- `/stx-designer:update <description>` — add or modify content
+- `/stx-designer:init <description>` — initialize project
 
 ## Project Context
 
