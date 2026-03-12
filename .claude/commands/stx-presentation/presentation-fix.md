@@ -3,7 +3,7 @@ Fix all presentation design violations in a StreamTeX block for live projection.
 ## Before Fixing
 
 Read these files (mandatory):
-1. `.claude/designer/ros_designer_default/skills/presentation-design-rules.md`
+1. `.claude/designer/presentation/skills/presentation-design-rules.md`
 2. `.claude/designer/skills/visual-design-rules.md` (base rules)
 3. `.claude/designer/skills/style-conventions.md`
 4. The target project's `custom/styles.py`
@@ -60,6 +60,47 @@ Apply these transformations in order:
 
 ### 11. Dense Content → Split
 - More than 3 bullets → split across sections or remove least important
+
+### 12. Missing PresentationConfig → Add in book.py
+- No `PresentationConfig` → add fullscreen configuration block:
+```python
+set_presentation_config(PresentationConfig(
+    title="...",
+    aspect_ratio="16/9",
+    footer=True,
+    center_content=True,
+    hide_streamlit_header=True,
+))
+```
+
+### 13. Missing SlideBreakConfig → Add Fullscreen Config
+- `space="5vh"` or missing config → replace with `fullscreen=True`:
+```python
+set_slide_break_config(SlideBreakConfig(
+    mode=SlideBreakMode.HIDDEN,
+    fullscreen=True,
+    marker=True,
+))
+```
+
+### 14. Manual Footer → Remove and Enable footer=True
+- Manual footer code in blocks (e.g., `st_write(s.small, "Page N")`) → delete
+- Ensure `PresentationConfig(footer=True)` is set in `book.py`
+
+### 15. Images in px → Convert to %
+- `width="600px"` → `width="80%"` or appropriate percentage
+- `width="400px"` → `width="60%"`
+- Keep relative to viewport, not fixed pixels
+
+### 16. Content Too Dense → Split into 2 Slides
+- If content exceeds 100vh (title + body + spacing > viewport), propose splitting
+- Move overflow content to a new block/slide
+- Add `st_slide_break(marker_label="...")` between them
+
+### 17. Numeric Block Prefixes → Rename to Descriptive
+- `bck_01_title.py` → `bck_title.py`
+- `bck_02_overview.py` → `bck_overview.py`
+- Update `st_book([...])` imports and references accordingly
 
 ## Workflow
 

@@ -2,14 +2,14 @@
 
 ## Design Role
 
-This project uses the **`ros_designer_default`** presentation design role.
+This project uses the **`presentation`** presentation design role.
 
 All slides in this project are designed for **live projection at 10–20 m distance**.
 
 ### Mandatory Reading (before any block creation or modification)
 
-1. `.claude/designer/ros_designer_default/skills/presentation-design-rules.md` — 9 rules
-2. `.claude/designer/ros_designer_default/agents/presentation-designer.md` — agent role
+1. `.claude/designer/presentation/skills/presentation-design-rules.md` — 9 rules
+2. `.claude/designer/presentation/agents/presentation-designer.md` — agent role
 3. `.claude/designer/skills/visual-design-rules.md` — base rules (overridden where conflicts)
 4. `.claude/designer/skills/style-conventions.md` — style patterns
 5. This file — project-specific context

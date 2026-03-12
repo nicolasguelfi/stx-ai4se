@@ -3,7 +3,7 @@ Audit a StreamTeX presentation block for live projection compliance.
 ## Before Auditing
 
 Read these files (mandatory):
-1. `.claude/designer/ros_designer_default/skills/presentation-design-rules.md`
+1. `.claude/designer/presentation/skills/presentation-design-rules.md`
 2. `.claude/designer/skills/visual-design-rules.md` (base rules)
 3. The target project's `custom/styles.py`
 
@@ -20,6 +20,10 @@ Audit the block file specified by $ARGUMENTS. If no argument given, ask the user
 3. **Keywords only**: No bullet exceeds 7 words. No section has more than 3 bullets.
 4. **High contrast**: No `muted` or `subtle` color on body text (only on attribution/source).
 5. **Image sizing**: No image below 400px width (except logos).
+6. **PresentationConfig**: `book.py` must contain `PresentationConfig(aspect_ratio="16/9")`. Missing = CRITICAL.
+7. **SlideBreakConfig fullscreen**: `SlideBreakConfig(fullscreen=True)` must be configured. Missing = CRITICAL.
+8. **Slide breaks**: `st_slide_break()` must be present between each section/slide. Missing = CRITICAL.
+9. **Footer config**: `PresentationConfig(footer=True)` must be set and no manual footer code in blocks. Manual footer = CRITICAL.
 
 ### ERROR (should fix)
 
@@ -34,6 +38,10 @@ Audit the block file specified by $ARGUMENTS. If no argument given, ask the user
 11. **Spacing consistency**: Inconsistent spacing between similar elements = WARNING.
 12. **Style reuse**: Repeated inline style compositions instead of `BlockStyles` class = WARNING.
 13. **Attribution placement**: Source/footer text above `s.large` (32pt) = WARNING (too prominent).
+14. **Density > 60%**: Slide content occupies more than 60% of the viewport surface = WARNING.
+15. **Images with px**: Images sized with `px` instead of `%` or `vh` units = WARNING.
+16. **Too many bullets**: More than 3 bullets in a fullscreen slide = WARNING.
+17. **Numeric block prefixes**: Block filenames like `bck_01_title.py` instead of `bck_title.py` = WARNING.
 
 ### Structure checks (base rules)
 
