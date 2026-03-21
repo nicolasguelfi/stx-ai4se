@@ -2,7 +2,7 @@
 
 import streamlit as st
 import streamtex as stx
-from streamtex import st_book, TOCConfig, NumberingMode, MarkerConfig, BannerConfig
+from streamtex import st_book, TOCConfig, NumberingMode, MarkerConfig, BannerConfig, ViewMode
 from pathlib import Path
 
 from custom.styles import Styles as s
@@ -52,4 +52,5 @@ st_book(
     paginate=True,
     banner=BannerConfig.full(),
     inspector=stx.InspectorConfig(enabled=True),
+    view_modes=[ViewMode.PAGINATED, ViewMode.CONTINUOUS],
 )
