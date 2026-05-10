@@ -5,7 +5,7 @@ You are a **StreamTeX Expert**. You NEVER write standard Streamlit code for cont
 You ALWAYS use the `streamtex` library (`stx.*` functions) instead of raw `st.*` calls.
 
 ## Terminology
-When the user says **"stream"**, **"la librairie"**, **"st"**, or **"stx"**, they always mean **StreamTeX**.
+When the user says **"stream"**, **"the library"**, **"st"**, or **"stx"**, they always mean **StreamTeX**.
 
 ## Environment (MANDATORY)
 This project uses **uv** for dependency management. You MUST:
@@ -58,13 +58,15 @@ See `.claude/references/coding_standards.md` for the full reference. Key rules:
 - Style composition: `Style + Style`, `Style + string`, `Style - string`
 
 ### Media & Visual
-- `st_image(style, src)` — Image handling with base64 encoding
+- `st_image(style, uri=)` — Image handling with base64 encoding
+- `st_ai_image(prompt, ...)` — AI image generation + display (requires `streamtex[ai]`)
+- `st_ai_image_widget(...)` — Interactive AI image generation widget
 - `st_code(style, code=, language=)` — Code blocks with Pygments
 - `st_space(dir, amount)`, `st_br()` — Spacing
 - `st_mermaid(style, code)` — Mermaid diagrams
 - `st_plantuml(style, code)` — PlantUML diagrams
 - `st_tikz(style, code)` — TikZ diagrams via LaTeX pipeline
-- `st_latex(style, code)` — LaTeX math rendering
+- `st_latex(content, *, style=)` — LaTeX math rendering
 
 ### Block Infrastructure
 - `ProjectBlockRegistry` — Lazy-loading block registry
@@ -89,30 +91,6 @@ stx-ai4se/
 └── .streamlit/config.toml  # Streamlit config
 ```
 
-## Documentation Lookup (when answering user questions)
-
-When the user asks a question about StreamTeX usage, patterns, or features:
-
-1. **Check if manuals exist**: look for `../../streamtex-docs/manuals/` (relative to this project).
-   Also try `../streamtex-docs/manuals/` (if project is directly in the workspace root).
-2. **If found** — search the relevant manual blocks for examples and patterns:
-   - `stx_manual_intro/blocks/` — fundamentals (text, grids, lists, images, containers, styles)
-   - `stx_manual_advanced/blocks/` — advanced features (export, PDF, bibliography, diagrams, overlays, banners)
-   - `stx_manual_ai/blocks/` — AI image generation, Claude profiles, prompt patterns
-   - `stx_manual_deploy/blocks/` — deployment (Docker, Render, CI/CD)
-   - `stx_manual_developer/blocks/` — library internals (architecture, testing, block system, CLI)
-   - Block files are `bck_*.py` — the `def build()` function contains live examples with `show_code()`, `show_explanation()`, and `show_details()`.
-3. **If NOT found** — the user's workspace doesn't include the documentation repo. Tell them:
-   > The StreamTeX documentation manuals are not available in your workspace.
-   > To access them (rich examples, tutorials, and patterns), upgrade your workspace:
-   > ```
-   > stx install --preset standard
-   > stx update
-   > ```
-   > This will clone the `streamtex-docs` repo with 6 manuals and 114+ example blocks.
-
-Always prefer showing real examples from manual blocks over generating code from scratch.
-
 ## Customization
 - `.claude/` contains **read-only** files installed by `stx claude update` — do not modify them
 - `.claude/custom/` contains **your personalizations** — never overwritten by updates
@@ -121,46 +99,54 @@ Always prefer showing real examples from manual blocks over generating code from
 - To add a slash command: create `.claude/commands/my-cmd/run.md` (commands go in `commands/`, not `custom/commands/`)
 - See `.claude/custom/README.md` for full details
 
-## Workflows — stx-designer Commands
+## Workflows
+1. **New Block** -> Read coding_standards.md, inspect existing blocks (`/stx-block:update` add block)
+2. **New Slide** -> Read designer skills (`/stx-block:update` add slide)
+3. **Presentation Audit** -> Check block for live projection compliance (`/stx-block:audit` presentation)
+4. **Presentation Fix** -> Auto-fix projection violations (`/stx-block:fix` presentation)
+5. **HTML Migration** -> Read migration commands (`/stx-block:update --migrate`)
+6. **Testing** -> `uv run pytest tests/ -v` (`/stx-block:test`)
+7. **Linting** -> `uv run ruff check` (`/stx-block:lint`)
 
-The `stx-designer` commands cover the full project lifecycle:
+## StreamTeX Patterns (graphic design patterns)
 
-1. **Create project** -> `/stx-designer:init <description>` (templates: project, presentation, collection, course)
-2. **Add content** -> `/stx-designer:update add a new block about X` or `/stx-designer:update add 3 slides on Y`
-3. **Customize** -> `/stx-designer:update change palette to blue/violet` or `/stx-designer:update switch to auditorium mode`
-4. **Migrate HTML** -> `/stx-designer:update --migrate convert intro.html`
-5. **Audit quality** -> `/stx-designer:audit --all` or `/stx-designer:audit --target bck_intro`
-6. **Fix issues** -> `/stx-designer:fix --all` or `/stx-designer:fix --target bck_intro`
-7. **Specialized tools** -> `/stx-designer:tool survey-convert`
-8. **Help** -> `/stx-designer:init --help` (cheatsheet for all commands)
-9. **Testing** -> `uv run pytest tests/ -v` (`/stx-developer:test-run`)
-10. **Linting** -> `uv run ruff check` (`/stx-developer:lint`)
+If the project contains a `streamtex-patterns/` folder (default location:
+`.claude/custom/streamtex-patterns/`), it defines reusable graphic design
+patterns (named grids, callouts, hero stats, slide headings, etc.) that
+the user can invoke by name when creating or editing blocks.
 
-## Workflows — stx-ce Compound Document Engineering
+**Mandatory rules**:
+1. **Before generating or modifying any StreamTeX block**, read
+   `<patterns-dir>/_pattern_library.md` to know which patterns are available.
+2. When the user names a pattern in any prompt (e.g. *"use grid_boston"*,
+   *"like stat_hero"*), read the full `<patterns-dir>/<name>.md` file
+   **before** generating code.
+3. Strictly respect each pattern's `INVARIANTS` section. Adjust only within
+   `PARAMS`. Refuse anything matching `INTERDITS` and propose a new pattern
+   instead.
+4. The pattern's code skeleton is a **starting point** — adapt it to the
+   project's `custom/styles.py` and palette.
+5. If the user describes something that matches no existing pattern but is
+   reusable, suggest `/stx-pattern:new` to capture it.
 
-The `stx-ce` commands provide a structured methodology for document production:
+**Difference with blueprints**:
+- A **blueprint** = a complete block type (`title`, `conclusion`, `exercise`).
+- A **pattern** = a reusable composition primitive used inside a block
+  (`grid_boston`, `callout_critical`, `ptn_slide_heading`).
 
-```
-COLLECT -> ASSESS -> PLAN -> PRODUCE -> REVIEW -> FIX -> COMPOUND
-```
+A block can combine: 1 blueprint × N patterns × style conventions.
 
-1. **Inventory sources** -> `/stx-ce:collect ~/my-sources/` (scan files, classify, evaluate importability)
-2. **Define objectives** -> `/stx-ce:assess` (auto-detects pathway: import/improve/create)
-3. **Plan production** -> `/stx-ce:plan` (auto) or `/stx-ce:plan --interactive` (4-step collaborative)
-4. **Execute plan** -> `/stx-ce:produce` (orchestrates stx-designer + stx-import commands)
-5. **Review document** -> `/stx-ce:review` (5 perspectives: audience, pedagogy, visual, style, editorial)
-6. **Fix findings** -> `/stx-ce:fix` (correct automatable issues, verify, trace — iterable with review)
-7. **Capitalize** -> `/stx-ce:compound` (3 axes: production learnings, ecosystem feedback, dev governance)
-8. **Full cycle** -> `/stx-ce:go "description"` (autonomous with 3 validation gates)
+**Commands**: `/stx-pattern:list` `/stx-pattern:show <name>`
+`/stx-pattern:new` `/stx-pattern:reindex` `/stx-pattern:validate`.
+See the `pattern-library` skill for the full mechanism.
 
-CE artifacts are stored in `docs/` (collect/, assess/, plans/, reviews/, solutions/).
-See `.claude/references/ce_cheatsheet_en.md` for the full reference.
+## Presentation patterns recommendation
 
-## Design Guidelines
+For a new presentation project, install the `slides` preset which
+includes everything needed for slide-based content:
 
-Projects can adopt a design guideline for consistent visual design:
-- **Available**: `.claude/designer/guidelines/_index.md` — catalog of built-in guidelines
-- **Project config**: `custom/design-guideline.md` — set default + block overrides
-- **Block annotation**: `# @guideline: <name>` in block files (most specific wins)
-- **Combination**: `# @guideline: A + B` — A has priority, B complements
-- **Built-in**: `maximize-viewport`, `minimalist-visual`, `academic-structured`, `dense-informative`
+    stx patterns install --preset slides
+
+This brings: core/* (slide_heading, callout, card_grid, comparison_table,
+takeaways, cite, inline_emphasis) + slides/* (title_slide, stat_hero,
+evidence_insight, exercise_flow, categorized_grid).
