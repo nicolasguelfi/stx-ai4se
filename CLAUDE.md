@@ -58,9 +58,9 @@ See `.claude/references/coding_standards.md` for the full reference. Key rules:
 - Style composition: `Style + Style`, `Style + string`, `Style - string`
 
 ### Media & Visual
-- `st_image(style, uri=)` — Image handling with base64 encoding
-- `st_ai_image(prompt, ...)` — AI image generation + display (requires `streamtex[ai]`)
-- `st_ai_image_widget(...)` — Interactive AI image generation widget
+- `st_image(style, uri=)` — Local / URL image handling with base64 encoding
+- `st_image(style, prompt=, editable=True, name=, provider=, ai_size=)` — AI image generation + editor panel (Prompt / AI / Edit / History tabs); requires `streamtex[ai]`
+- `generate_image(prompt, provider=...)` — Programmatic generation without rendering
 - `st_code(style, code=, language=)` — Code blocks with Pygments
 - `st_space(dir, amount)`, `st_br()` — Spacing
 - `st_mermaid(style, code)` — Mermaid diagrams
@@ -108,45 +108,35 @@ stx-ai4se/
 6. **Testing** -> `uv run pytest tests/ -v` (`/stx-block:test`)
 7. **Linting** -> `uv run ruff check` (`/stx-block:lint`)
 
-## StreamTeX Patterns (graphic design patterns)
+## Reuse architecture (packs, components, design systems, kits)
 
-If the project contains a `streamtex-patterns/` folder (default location:
-`.claude/custom/streamtex-patterns/`), it defines reusable graphic design
-patterns (named grids, callouts, hero stats, slide headings, etc.) that
-the user can invoke by name when creating or editing blocks.
+The presentation profile leans on the `streamtex-design` pack components
+(`title_slide`, `slide_heading`, `stat_hero`, `takeaways`,
+`narrative_transition`, `callout`, `card_grid`, `cite`) paired with the
+`slides-modern-dark` kit. See the `reuse-architecture` skill (loaded
+automatically) for the full mechanism.
 
-**Mandatory rules**:
-1. **Before generating or modifying any StreamTeX block**, read
-   `<patterns-dir>/_pattern_library.md` to know which patterns are available.
-2. When the user names a pattern in any prompt (e.g. *"use grid_boston"*,
-   *"like stat_hero"*), read the full `<patterns-dir>/<name>.md` file
-   **before** generating code.
-3. Strictly respect each pattern's `INVARIANTS` section. Adjust only within
-   `PARAMS`. Refuse anything matching `INTERDITS` and propose a new pattern
-   instead.
-4. The pattern's code skeleton is a **starting point** — adapt it to the
-   project's `custom/styles.py` and palette.
-5. If the user describes something that matches no existing pattern but is
-   reusable, suggest `/stx-pattern:new` to capture it.
+**Mandatory rules** (cf. project-level CLAUDE.md):
+1. Run `stx component list --granularity primitive|composition|block`
+   before generating or editing a slide.
+2. Inspect specific components via `stx component show <name>`.
+3. Strictly respect each component's `INVARIANTS`. Adjust only within
+   `PARAMS`. Refuse anything matching `INTERDITS`.
+4. If a slide pattern recurs, capture it as a new component with
+   `stx component new`.
 
-**Difference with blueprints**:
-- A **blueprint** = a complete block type (`title`, `conclusion`, `exercise`).
-- A **pattern** = a reusable composition primitive used inside a block
-  (`grid_boston`, `callout_critical`, `ptn_slide_heading`).
+**Commands**: `/stx-pack`, `/stx-component`, `/stx-ds`, `/stx-kit`,
+`/stx-validate`. The legacy `/stx-pattern:*` commands were removed in
+streamtex 0.7.x.
 
-A block can combine: 1 blueprint × N patterns × style conventions.
+## Presentation kit recommendation
 
-**Commands**: `/stx-pattern:list` `/stx-pattern:show <name>`
-`/stx-pattern:new` `/stx-pattern:reindex` `/stx-pattern:validate`.
-See the `pattern-library` skill for the full mechanism.
+For a new presentation project, install the `slides-modern-dark` kit
+from `streamtex-design`, which bundles everything needed for slide-based
+content along with the `modern_dark` design system:
 
-## Presentation patterns recommendation
+    stx kit install streamtex-design:slides-modern-dark
 
-For a new presentation project, install the `slides` preset which
-includes everything needed for slide-based content:
-
-    stx patterns install --preset slides
-
-This brings: core/* (slide_heading, callout, card_grid, comparison_table,
-takeaways, cite, inline_emphasis) + slides/* (title_slide, stat_hero,
-evidence_insight, exercise_flow, categorized_grid).
+Components included: `slide_heading`, `title_slide`, `stat_hero`,
+`evidence_insight`, `exercise_flow`, `categorized_grid`, `takeaways`,
+`callout`, `card_grid`, `comparison_table`, `cite`, `inline_emphasis`.
